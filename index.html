@@ -3,110 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Instagram Direct Video URL Extractor</title>
+  <title>SnapInsta-style Instagram Downloader</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #0f0f0f;
-      color: #e0e0e0;
+      background: #f8f9fa;
+      color: #333;
       margin: 0;
-      padding: 40px 20px;
-      line-height: 1.6;
+      padding: 30px 20px;
     }
     .container {
-      max-width: 720px;
+      max-width: 780px;
       margin: 0 auto;
-      background: #111;
+      background: white;
       padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
     h1 {
       text-align: center;
-      color: #ff3366;
-      margin-bottom: 0.6em;
+      color: #e1306c;
+      margin-bottom: 10px;
     }
-    input[type="text"] {
-      width: 100%;
-      padding: 16px;
-      font-size: 1.1rem;
-      background: #1a1a1a;
-      border: 2px solid #333;
-      color: white;
+    .subtitle {
+      text-align: center;
+      color: #555;
+      margin-bottom: 30px;
+    }
+    .step {
+      margin: 30px 0;
+      padding: 20px;
+      background: #f8f9fa;
       border-radius: 10px;
-      margin: 20px 0;
-      outline: none;
+      border: 1px solid #ddd;
     }
-    input:focus {
-      border-color: #ff3366;
+    .step h3 {
+      color: #e1306c;
+      margin-bottom: 12px;
+    }
+    textarea, input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      resize: vertical;
+      min-height: 100px;
+      font-family: monospace;
+      margin: 10px 0;
     }
     button {
-      background: linear-gradient(45deg, #ff3366, #cc3366);
+      background: #e1306c;
       color: white;
       border: none;
-      padding: 16px 40px;
+      padding: 14px 32px;
       font-size: 1.1rem;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      display: block;
-      margin: 20px auto;
-      transition: opacity 0.2s;
+      margin: 10px 0;
     }
     button:hover {
-      opacity: 0.9;
+      background: #c13584;
+    }
+    #preview {
+      max-width: 100%;
+      border-radius: 10px;
+      margin: 20px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
     #result {
-      margin-top: 30px;
+      margin-top: 20px;
       padding: 20px;
-      background: #1a1a1a;
+      background: #f0f8ff;
       border-radius: 10px;
-      border: 1px solid #333;
-      word-break: break-all;
-      font-size: 0.95rem;
+      border: 1px solid #cce5ff;
     }
-    .success { color: #33ff99; font-weight: bold; }
-    .error   { color: #ff6666; font-weight: bold; }
+    .error {
+      color: #dc3545;
+      font-weight: bold;
+    }
     pre {
-      background: #000;
+      background: #f8f9fa;
       padding: 12px;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin: 15px 0;
-    }
-    .steps {
-      margin-top: 25px;
-      padding: 15px;
-      background: #222;
-      border-left: 4px solid #ff3366;
       border-radius: 6px;
+      overflow-x: auto;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Instagram Direct Video URL Extractor</h1>
+  <h1>Instagram Downloader</h1>
+  <p class="subtitle">Download Reels, Videos, Photos from Public Instagram Posts</p>
 
-  <p>Paste any Instagram Reel / Post URL below:</p>
-  <input type="text" id="urlInput" placeholder="https://www.instagram.com/reels/DVeRz5gimxe/  or  https://www.instagram.com/reel/DVeRz5gimxe/..." />
+  <div class="step">
+    <h3>1. Paste Instagram Post/Reel URL</h3>
+    <input type="text" id="igUrl" placeholder="https://www.instagram.com/reel/DVeRz5gimxe/ ..." />
+    <button onclick="generateGraphql()">Generate GraphQL Link</button>
+    <p id="generatedLink" style="margin-top:15px; word-break:break-all;"></p>
+  </div>
 
-  <button onclick="extractAndFetch()">Get Direct Video URL</button>
+  <div class="step">
+    <h3>2. Open the link above in a new tab, then copy ALL page content (Ctrl+A → Ctrl+C)</h3>
+    <p>After opening, the browser will show raw JSON. Select everything and copy it.</p>
+  </div>
+
+  <div class="step">
+    <h3>3. Paste the copied JSON here and click Download</h3>
+    <textarea id="jsonPaste" placeholder="Paste the entire JSON response here..."></textarea>
+    <button onclick="parseAndShow()">Download</button>
+  </div>
 
   <div id="result"></div>
-
-  <div class="steps">
-    <strong>When you get the link:</strong>
-    <ol>
-      <li>Click the link shown below (or copy-paste it into a new tab)</li>
-      <li>Wait for the video to load and start playing</li>
-      <li><strong>Right-click</strong> on the video (or long-press on mobile)</li>
-      <li>Select <strong>"Save video as..."</strong> or <strong>"Download video"</strong></li>
-      <li>If no menu appears: look for the <strong>three dots ⋮</strong> in the video player → tap them → choose Download/Save</li>
-    </ol>
-    <p style="margin-top:15px; font-size:0.9rem; opacity:0.8;">
-      Note: This fetches from Instagram's internal GraphQL using the fixed doc_id. If it fails (CORS / rate limit / doc_id rotated), use the manual method: open reel → Inspect → Network → filter mp4.
-    </p>
-  </div>
 </div>
 
 <script>
@@ -116,78 +125,83 @@
     return match ? match[2] : null;
   }
 
-  async function extractAndFetch() {
-    const input = document.getElementById('urlInput').value.trim();
-    const resultDiv = document.getElementById('result');
+  function generateGraphql() {
+    const url = document.getElementById('igUrl').value.trim();
+    const linkEl = document.getElementById('generatedLink');
+    linkEl.innerHTML = '';
 
-    resultDiv.innerHTML = '';
+    if (!url) return alert('Paste a valid Instagram URL first');
 
-    if (!input) {
-      resultDiv.innerHTML = '<p class="error">Please paste a valid Instagram URL</p>';
-      return;
-    }
+    const shortcode = extractShortcode(url);
+    if (!shortcode) return alert('Could not find shortcode (after /reel/ or /reels/)');
 
-    const shortcode = extractShortcode(input);
-    if (!shortcode) {
-      resultDiv.innerHTML = '<p class="error">No valid shortcode found in the URL (after /reel/ or /reels/)</p>';
-      return;
-    }
+    const graphql = `https://www.instagram.com/graphql/query/?doc_id=8845758582119845&variables=%7B%22shortcode%22%3A%22${shortcode}%22%2C%22fetch_tagged_user_count%22%3Anull%2C%22hoisted_comment_id%22%3Anull%2C%22hoisted_reply_id%22%3Anull%7D`;
 
-    resultDiv.innerHTML = '<p style="color:#aaa;">Fetching GraphQL data... please wait</p>';
+    linkEl.innerHTML = `
+      <strong>Copy & open this link in new tab:</strong><br>
+      <a href="${graphql}" target="_blank" style="color:#e1306c; word-break:break-all;">${graphql}</a>
+      <br><small>(After opening, press Ctrl+A then Ctrl+C to copy everything)</small>
+    `;
+  }
 
-    const docId = '8845758582119845';
-    const graphqlUrl = `https://www.instagram.com/graphql/query/?doc_id=${docId}&variables=%7B%22shortcode%22%3A%22${shortcode}%22%2C%22fetch_tagged_user_count%22%3Anull%2C%22hoisted_comment_id%22%3Anull%2C%22hoisted_reply_id%22%3Anull%7D`;
+  function parseAndShow() {
+    const jsonText = document.getElementById('jsonPaste').value.trim();
+    const result = document.getElementById('result');
+    result.innerHTML = '';
+
+    if (!jsonText) return result.innerHTML = '<p class="error">Paste the JSON first!</p>';
 
     try {
-      let response;
+      const data = JSON.parse(jsonText);
+      const media = data?.data?.xdt_shortcode_media;
 
-      // Try direct fetch first
-      try {
-        response = await fetch(graphqlUrl);
-      } catch (e) {
-        // CORS likely blocked → use public proxy
-        const proxy = 'https://corsproxy.io/?' + encodeURIComponent(graphqlUrl);
-        response = await fetch(proxy);
-      }
+      if (!media) throw new Error('No media found in JSON (wrong paste or blocked response)');
 
-      if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
-      }
+      const isVideo = media.is_video || !!media.video_url;
+      const mediaUrl = media.video_url || media.display_url || media.thumbnail_src || null;
+      const thumbUrl = media.thumbnail_src || media.display_url || null;
+      const caption = media.edge_media_to_caption?.edges?.[0]?.node?.text || 'No caption';
+      const username = media.owner?.username || 'Unknown';
+      const views = media.video_view_count || 'N/A';
+      const plays = media.video_play_count || 'N/A';
+      const duration = media.video_duration ? Math.floor(media.video_duration) + 's' : 'N/A';
 
-      const json = await response.json();
-      const media = json?.data?.xdt_shortcode_media;
-
-      if (!media) {
-        throw new Error('No media data found');
-      }
-
-      let mediaUrl = media.video_url || media.display_url || null;
-
-      if (!mediaUrl) {
-        throw new Error('No video_url or display_url found in response');
-      }
-
-      const type = media.video_url ? 'Video' : 'Image/Thumbnail';
-
-      resultDiv.innerHTML = `
-        <p class="success">Success! Direct ${type} URL found:</p>
-        <pre>${mediaUrl}</pre>
-        <p>
-          <a href="${mediaUrl}" target="_blank" style="color:#33ff99; text-decoration:underline; font-weight:bold;">
-            → Open link & download (right-click / three dots)
-          </a>
-        </p>
+      let html = `
+        <h3 style="color:#e1306c;">Found Media!</h3>
+        <p><strong>Posted by:</strong> @${username}</p>
+        <p><strong>Views:</strong> ${views} • <strong>Plays:</strong> ${plays} • <strong>Duration:</strong> ${duration}</p>
+        <p><strong>Caption:</strong></p>
+        <pre>${caption}</pre>
       `;
 
+      if (thumbUrl) {
+        html += `<img id="preview" src="${thumbUrl}" alt="Thumbnail" />`;
+      }
+
+      if (mediaUrl) {
+        html += `
+          <p style="margin-top:20px;">
+            <strong>Direct ${isVideo ? 'Video' : 'Image'} URL:</strong><br>
+            <a href="${mediaUrl}" target="_blank" style="color:#e1306c; font-weight:bold; word-break:break-all;">
+              ${mediaUrl}
+            </a>
+          </p>
+          <p style="font-size:0.95rem; color:#555;">
+            → Click the link above → right-click/long-press the media → "Save as..." or use three dots ⋮ → Download
+          </p>
+        `;
+      } else {
+        html += '<p class="error">No downloadable media URL found in this response</p>';
+      }
+
+      result.innerHTML = html;
+
     } catch (err) {
-      resultDiv.innerHTML = `
-        <p class="error">Failed to get the URL</p>
-        <p style="color:#aaa;">${err.message}</p>
-        <p style="margin-top:15px;">
-          Possible reasons:<br>
-          • Instagram blocked the request (CORS / rate limit / doc_id outdated)<br>
-          • Post is private / deleted / restricted<br>
-          • Try again later or use manual method (Inspect → Network → .mp4)
+      result.innerHTML = `
+        <p class="error">Error parsing JSON: ${err.message}</p>
+        <p style="color:#555;">
+          Make sure you copied the <strong>entire raw response</strong> from the GraphQL tab (Ctrl+A → Ctrl+C).<br>
+          If Instagram shows error/blank → the doc_id may be blocked/outdated → try manual Network tab method.
         </p>
       `;
     }
