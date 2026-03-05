@@ -3,280 +3,322 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IG Video Downloader</title>
+  <title>IG Video Downloader Pro</title>
   <style>
     :root {
-      --bg: #f5f5f5;
-      --card-bg: white;
-      --text: #262626;
-      --text-secondary: #8e8e8e;
-      --border: #dbdbdb;
-      --accent: #e1306c;
-      --accent-hover: #c13584;
-      --btn-primary: #e1306c;
-      --btn-primary-hover: #c13584;
-      --btn-secondary: #0095f6;
-      --btn-secondary-hover: #007bb5;
-      --input-bg: white;
-      --input-border: #dbdbdb;
-      --result-bg: #f8f9fa;
-      --shadow: rgba(0,0,0,0.08);
-    }
-    [data-theme="dark"] {
-      --bg: #0f0f0f;
-      --card-bg: #111;
-      --text: #e0e0e0;
-      --text-secondary: #aaaaaa;
-      --border: #333;
+      --bg: linear-gradient(135deg, #667eea, #764ba2);
+      --card: rgba(255, 255, 255, 0.08);
+      --text: #ffffff;
+      --text-muted: rgba(255,255,255,0.7);
       --accent: #ff3366;
-      --accent-hover: #e02e5c;
-      --btn-primary: #ff3366;
-      --btn-primary-hover: #e02e5c;
-      --btn-secondary: #3b82f6;
-      --btn-secondary-hover: #2563eb;
-      --input-bg: #1a1a1a;
-      --input-border: #444;
-      --result-bg: #1a1a1a;
-      --shadow: rgba(0,0,0,0.6);
+      --accent-glow: rgba(255,51,102,0.4);
+      --border: rgba(255,255,255,0.15);
+      --shadow: 0 8px 32px rgba(0,0,0,0.37);
+      --glass: rgba(255,255,255,0.06);
+    }
+    [data-theme="light"] {
+      --bg: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      --card: rgba(255,255,255,0.85);
+      --text: #1a1a1a;
+      --text-muted: #555;
+      --accent: #e1306c;
+      --accent-glow: rgba(225,48,108,0.25);
+      --border: rgba(0,0,0,0.08);
+      --glass: rgba(255,255,255,0.75);
     }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 20px;
+      padding: 0;
       min-height: 100vh;
-      transition: background 0.3s, color 0.3s;
+      transition: all 0.4s ease;
     }
     .container {
-      max-width: 820px;
-      margin: 0 auto;
-      background: var(--card-bg);
-      padding: 32px;
-      border-radius: 16px;
-      box-shadow: 0 8px 32px var(--shadow);
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 40px;
+      background: var(--card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
       position: relative;
+      overflow: hidden;
     }
     .theme-toggle {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      font-size: 1.4rem;
+      top: 24px;
+      right: 24px;
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
       cursor: pointer;
-      color: var(--text-secondary);
+      transition: all 0.3s;
+    }
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px var(--accent-glow);
     }
     h1 {
       text-align: center;
-      color: var(--accent);
-      margin: 0 0 12px;
-      font-size: 2.1rem;
+      font-size: 2.8rem;
+      margin: 0 0 8px;
+      background: linear-gradient(90deg, var(--accent), #9f7aea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
     }
     .subtitle {
       text-align: center;
-      color: var(--text-secondary);
-      margin-bottom: 32px;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      margin-bottom: 40px;
     }
     .step {
-      background: var(--result-bg);
-      padding: 24px;
-      border-radius: 12px;
-      margin: 28px 0;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      padding: 28px;
+      border-radius: 20px;
+      margin: 32px 0;
       border: 1px solid var(--border);
+      transition: transform 0.3s;
+    }
+    .step:hover {
+      transform: translateY(-4px);
     }
     .step h3 {
       color: var(--accent);
-      margin: 0 0 16px;
-      font-size: 1.3rem;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
     }
     input[type="text"], textarea {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 1rem;
-      border: 1px solid var(--input-border);
-      border-radius: 8px;
-      margin: 12px 0;
-      box-sizing: border-box;
-      background: var(--input-bg);
+      padding: 16px 20px;
+      font-size: 1.05rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin: 16px 0;
+      background: rgba(255,255,255,0.08);
       color: var(--text);
+      transition: all 0.3s;
+    }
+    [data-theme="light"] input, [data-theme="light"] textarea {
+      background: rgba(0,0,0,0.05);
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow);
     }
     textarea {
-      min-height: 140px;
-      font-family: monospace;
-      resize: vertical;
+      min-height: 160px;
+      font-family: 'Courier New', monospace;
     }
     .btn-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 16px;
       justify-content: center;
-      margin: 20px 0;
+      margin: 24px 0;
     }
     button {
-      background: var(--btn-primary);
-      color: white;
-      border: none;
-      padding: 14px 28px;
-      font-size: 1.05rem;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button:hover {
-      background: var(--btn-primary-hover);
-    }
-    button.copy-btn {
-      background: var(--btn-secondary);
-    }
-    button.copy-btn:hover {
-      background: var(--btn-secondary-hover);
-    }
-    button.graph-btn {
-      background: var(--btn-secondary);
       padding: 16px 36px;
       font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+    button.primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+    }
+    button.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px var(--accent-glow);
+    }
+    button.secondary {
+      background: var(--glass);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    button.secondary:hover {
+      background: rgba(255,255,255,0.15);
     }
     #preview {
       max-width: 100%;
-      border-radius: 12px;
+      border-radius: 16px;
       margin: 24px auto;
       display: block;
-      box-shadow: 0 6px 24px var(--shadow);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      transition: transform 0.4s;
+    }
+    #preview:hover {
+      transform: scale(1.02);
     }
     #result {
-      margin-top: 32px;
-      padding: 24px;
-      background: var(--result-bg);
-      border-radius: 12px;
+      margin-top: 40px;
+      padding: 28px;
+      background: var(--glass);
+      border-radius: 20px;
       border: 1px solid var(--border);
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     .info-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin: 24px 0;
+      gap: 20px;
+      margin: 28px 0;
     }
     .info-item {
-      background: var(--card-bg);
-      padding: 16px;
-      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      padding: 20px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       text-align: center;
+      transition: all 0.3s;
+    }
+    .info-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
     }
     .caption-box {
+      background: rgba(255,255,255,0.06);
+      padding: 20px;
+      border-radius: 12px;
+      max-height: 280px;
+      overflow-y: auto;
       white-space: pre-wrap;
       word-break: break-word;
-      max-height: 240px;
-      overflow-y: auto;
-      padding: 16px;
-      background: var(--card-bg);
+      margin: 24px 0;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      margin: 16px 0;
-      font-size: 0.98rem;
-    }
-    .reminder {
-      background: #fff3cd;
-      color: #856404;
-      padding: 16px;
-      border-radius: 10px;
-      margin: 16px 0;
-      border: 1px solid #ffeeba;
-    }
-    [data-theme="dark"] .reminder {
-      background: #3c2f00;
-      color: #ffcc00;
-      border-color: #665500;
     }
     .error {
-      color: #ed4956;
+      color: #ff6b6b;
       font-weight: bold;
       text-align: center;
+      margin: 20px 0;
     }
-    @media (max-width: 600px) {
-      .btn-group {
-        flex-direction: column;
-      }
-      button {
-        width: 100%;
-      }
+    @media (max-width: 768px) {
+      .container { padding: 24px; }
+      h1 { font-size: 2.2rem; }
+      .btn-group { flex-direction: column; }
+      button { width: 100%; }
     }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body data-theme="light">
+<body data-theme="dark">
 <div class="container">
-  <button class="theme-toggle" title="Toggle Dark/Light">🌙</button>
-  <h1>IG Video Downloader</h1>
-  <p class="subtitle">Download Reels, Videos & Photos from Public Instagram Posts</p>
+  <button class="theme-toggle" title="Toggle Theme">🌙</button>
+
+  <h1>IG Video Downloader Pro</h1>
+  <p class="subtitle">Fast, secure downloads of public Reels, videos & photos</p>
+
   <div class="step">
-    <h3>1. Paste Instagram Reel / Post URL</h3>
+    <h3>1. Enter Instagram URL</h3>
     <input type="text" id="igUrl" placeholder="https://www.instagram.com/reel/ABC123xyz/ ..." />
     <div class="btn-group">
-      <button class="graph-btn">Go to GraphQL Link</button>
+      <button class="primary graph-btn">Generate Link</button>
     </div>
-    <div id="generatedLink" style="margin-top:16px; word-break:break-all; font-size:0.95rem;"></div>
+    <div id="generatedLink" style="margin-top:20px; word-break:break-all; font-size:0.95rem;"></div>
     <div id="firstTimeReminder" class="reminder" style="display:none;">
-      <strong>Important – First time only:</strong><br>
-      After the page opens → press <strong>Ctrl+A</strong> (or Cmd+A on Mac) to select all → then <strong>Ctrl+C</strong> (or Cmd+C) to copy everything.<br>
-      Come back here and paste it into the box below.
+      <strong>Important (first time only):</strong><br>
+      After the page loads → press <strong>Ctrl+A</strong> (Cmd+A on Mac) → <strong>Ctrl+C</strong> to copy everything.<br>
+      Return here and paste into the next box.
     </div>
   </div>
+
   <div class="step">
-    <h3>2. Paste the full copied content here</h3>
-    <textarea id="jsonPaste" placeholder="Paste the entire JSON from the GraphQL page..."></textarea>
+    <h3>2. Paste JSON Response</h3>
+    <textarea id="jsonPaste" placeholder="Paste the full JSON from the opened tab..."></textarea>
     <div class="btn-group">
-      <button>Process & Download</button>
+      <button class="primary">Process & Download</button>
     </div>
   </div>
+
   <div id="result"></div>
 </div>
+
 <script>
-  function toggleTheme() {
+  // Theme toggle & persistence
+  const toggleBtn = document.querySelector('.theme-toggle');
+  toggleBtn.addEventListener('click', () => {
     const current = document.body.getAttribute('data-theme');
     const next = current === 'dark' ? 'light' : 'dark';
     document.body.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
-    const btn = document.querySelector('.theme-toggle');
-    btn.textContent = next === 'dark' ? '☀️' : '🌙';
-  }
-  const savedTheme = localStorage.getItem('theme') || 'light';
+    toggleBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+
+  const savedTheme = localStorage.getItem('theme') || 'dark';
   document.body.setAttribute('data-theme', savedTheme);
-  document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+  toggleBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
   let hasShownReminder = false;
+
   function extractShortcode(url) {
     const regex = /(?:\/(reel|reels|p|tv)\/)([A-Za-z0-9_-]+)/i;
     const match = url.match(regex);
     return match ? match[2] : null;
   }
-  document.querySelector('.graph-btn').addEventListener('click', function() {
+
+  document.querySelector('.graph-btn').addEventListener('click', () => {
     const url = document.getElementById('igUrl').value.trim();
     const linkEl = document.getElementById('generatedLink');
+
     if (!url) return alert('Please enter a valid Instagram URL');
+
     const shortcode = extractShortcode(url);
     if (!shortcode) return alert('Shortcode not found – check URL format');
+
     const graphql = `https://www.instagram.com/graphql/query/?doc_id=8845758582119845&variables=%7B%22shortcode%22%3A%22${shortcode}%22%2C%22fetch_tagged_user_count%22%3Anull%2C%22hoisted_comment_id%22%3Anull%2C%22hoisted_reply_id%22%3Anull%7D`;
+
     linkEl.innerHTML = `
-      <strong>GraphQL Link:</strong><br>
-      <a href="${graphql}" target="_blank" style="color:var(--accent); text-decoration:underline;">
+      <strong>GraphQL Link (click to open):</strong><br>
+      <a href="${graphql}" target="_blank" style="color:var(--accent); text-decoration:underline; word-break:break-all;">
         ${graphql}
       </a>
-      <br><small>(Click above → wait for load → Ctrl+A → Ctrl+C → paste below)</small>
+      <br><small>(After opening → Ctrl+A → Ctrl+C → paste below)</small>
     `;
+
     if (!hasShownReminder) {
       document.getElementById('firstTimeReminder').style.display = 'block';
       hasShownReminder = true;
     }
   });
-  document.querySelector('.step button:last-child').addEventListener('click', function() {
+
+  document.querySelector('.step button:last-child').addEventListener('click', () => {
     const text = document.getElementById('jsonPaste').value.trim();
     const result = document.getElementById('result');
     result.innerHTML = '';
-    if (!text) return result.innerHTML = '<p class="error">Paste the JSON content first</p>';
+
+    if (!text) {
+      result.innerHTML = '<p class="error">Please paste JSON content first</p>';
+      return;
+    }
+
     try {
       const data = JSON.parse(text);
       const media = data?.data?.xdt_shortcode_media;
-      if (!media) throw new Error('No media data found in the pasted content');
+
+      if (!media) throw new Error('No media data found');
+
       const isVideo = !!media.video_url;
       const mediaUrl = media.video_url || media.display_url || media.thumbnail_src || '';
       const thumbUrl = media.thumbnail_src || media.display_url || '';
@@ -284,99 +326,108 @@
       const username = media.owner?.username || 'Unknown';
       const views = media.video_view_count || '—';
       const plays = media.video_play_count || '—';
-      const duration = media.video_duration ? Math.floor(media.video_duration) + ' s' : '—';
+      const duration = media.video_duration ? Math.floor(media.video_duration) + 's' : '—';
       const shortcode = media.shortcode || '—';
-      let html = `
-        <h2 style="color:var(--accent); text-align:center; margin-bottom:24px;">Media Ready to Download</h2>
-        <div class="info-grid">
-          <div class="info-item"><strong>By</strong><br>@${username}</div>
-          <div class="info-item"><strong>Shortcode</strong><br>${shortcode}</div>
-          <div class="info-item"><strong>Views / Plays</strong><br>${views} / ${plays}</div>
-          <div class="info-item"><strong>Duration</strong><br>${duration}</div>
-        </div>
-        <h4 style="margin:28px 0 12px; color:var(--text);">Caption</h4>
-        <div class="caption-box" id="captionText">${caption}</div>
-        ${thumbUrl ? `
-          <div style="text-align:center; margin:32px 0;">
-            <img id="preview" src="${thumbUrl}" alt="Preview" />
-            <div style="margin-top:16px;">
-              <button onclick="triggerDownload('${thumbUrl}', 'thumb_${shortcode}.jpg')">
-                Download Thumbnail
-              </button>
-            </div>
-          </div>
-        ` : '<p style="text-align:center; color:var(--text-secondary);">No thumbnail available</p>'}
-        <div class="btn-group" style="justify-content:center; margin:32px 0;">
-          <button onclick="triggerDownload('${mediaUrl}', '${isVideo ? 'reel' : 'post'}_${shortcode}.${isVideo ? 'mp4' : 'jpg'}')">
-            ${isVideo ? 'Download Video' : 'Download Photo'}
-          </button>
-          <button class="copy-btn" onclick="copyCaption()">
-            Copy Caption
-          </button>
-          <button class="copy-btn" onclick="copyFullInfo('${username}', '${views}', '${plays}', '${duration}', \`${caption.replace(/`/g,'\\`')}\`)">
-            Copy All Info
-          </button>
-        </div>
+
+      const mediaInfo = document.createElement('div');
+      mediaInfo.className = 'info-grid';
+      mediaInfo.innerHTML = `
+        <div class="info-item"><strong>By</strong><br>@${username}</div>
+        <div class="info-item"><strong>Shortcode</strong><br>${shortcode}</div>
+        <div class="info-item"><strong>Views / Plays</strong><br>${views} / ${plays}</div>
+        <div class="info-item"><strong>Duration</strong><br>${duration}</div>
       `;
-      result.innerHTML = html;
+      result.appendChild(mediaInfo);
+
+      if (thumbUrl) {
+        const previewDiv = document.createElement('div');
+        previewDiv.style.textAlign = 'center';
+        previewDiv.style.margin = '32px 0';
+
+        const img = document.createElement('img');
+        img.id = 'preview';
+        img.src = thumbUrl;
+        img.alt = 'Preview';
+        previewDiv.appendChild(img);
+
+        const thumbBtn = document.createElement('button');
+        thumbBtn.className = 'secondary';
+        thumbBtn.textContent = 'Download Thumbnail';
+        thumbBtn.addEventListener('click', () => {
+          const a = document.createElement('a');
+          a.href = thumbUrl;
+          a.download = `thumb_${shortcode}.jpg`;
+          a.click();
+        });
+        previewDiv.appendChild(thumbBtn);
+
+        result.appendChild(previewDiv);
+      } else {
+        const noThumb = document.createElement('p');
+        noThumb.style.textAlign = 'center';
+        noThumb.style.color = 'var(--text-muted)';
+        noThumb.textContent = 'No thumbnail available';
+        result.appendChild(noThumb);
+      }
+
+      const captionBox = document.createElement('div');
+      captionBox.className = 'caption-box';
+      captionBox.id = 'captionText';
+      captionBox.textContent = caption;
+      result.appendChild(captionBox);
+
+      const btnGroup = document.createElement('div');
+      btnGroup.className = 'btn-group';
+      btnGroup.style.marginTop = '32px';
+
+      if (mediaUrl) {
+        const dlBtn = document.createElement('button');
+        dlBtn.className = 'primary';
+        dlBtn.textContent = `Download ${isVideo ? 'Video' : 'Photo'}`;
+        dlBtn.addEventListener('click', () => {
+          const a = document.createElement('a');
+          a.href = mediaUrl;
+          a.download = `${isVideo ? 'reel' : 'post'}_${shortcode}.${isVideo ? 'mp4' : 'jpg'}`;
+          a.click();
+        });
+        btnGroup.appendChild(dlBtn);
+      }
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'copy-btn';
+      copyBtn.textContent = 'Copy Caption';
+      copyBtn.addEventListener('click', () => {
+        const captionText = document.getElementById('captionText').textContent;
+        navigator.clipboard.writeText(captionText).then(() => {
+          alert('Caption copied to clipboard!');
+        }).catch(() => alert('Copy failed – select manually'));
+      });
+      btnGroup.appendChild(copyBtn);
+
+      result.appendChild(btnGroup);
+
+      result.style.display = 'block';
+
     } catch (err) {
-      result.innerHTML = `
-        <p class="error">Processing failed</p>
-        <p style="color:var(--text-secondary); text-align:center;">
-          ${err.message}<br><br>
-          Make sure you copied the <strong>full raw JSON</strong> from the opened tab.<br>
-          If nothing loads → the doc_id may be blocked → try the browser Network tab method.
-        </p>
-      `;
+      const errP = document.createElement('p');
+      errP.className = 'error';
+      errP.textContent = `Processing failed: ${err.message}`;
+      result.appendChild(errP);
     }
   });
-  function triggerDownload(url, filename) {
-    if (!url) return alert('No file URL available');
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-  function copyCaption() {
-    const caption = document.getElementById('captionText')?.innerText || '';
-    if (!caption) return alert('No caption to copy');
-    navigator.clipboard.writeText(caption).then(() => {
-      alert('Caption copied!');
-    }).catch(() => {
-      alert('Clipboard failed – please select the caption text manually');
-    });
-  }
-  function copyFullInfo(username, views, plays, duration, caption) {
-    const text = `Posted by: @${username}
-Views: ${views} • Plays: ${plays} • Duration: ${duration}
-Caption:
-${caption}`;
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Full info copied!');
-    }).catch(() => {
-      alert('Clipboard failed – copy manually');
-    });
-  }
-  document.addEventListener('DOMContentLoaded', function () {
+
+  // Auto-fill from extension query param
+  document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const igUrl = params.get('url');
     if (igUrl) {
-      const input = document.querySelector('#igUrl');
+      const input = document.getElementById('igUrl');
       if (input) {
         input.value = decodeURIComponent(igUrl);
         const generateBtn = document.querySelector('.graph-btn');
         if (generateBtn) {
-          setTimeout(() => {
-            generateBtn.click();
-          }, 300);
+          setTimeout(() => generateBtn.click(), 400);
         }
-        const status = document.createElement('p');
-        status.style.color = '#22c55e';
-        status.style.marginTop = '12px';
-        status.textContent = 'Instagram URL auto-filled from extension!';
-        input.parentNode.insertBefore(status, input.nextSibling);
       }
     }
   });
