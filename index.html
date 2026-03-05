@@ -422,6 +422,39 @@ ${caption}`;
     });
   }
 </script>
+<script>
+  // Auto-fill Instagram URL from extension query parameter
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const igUrl = params.get('url');
 
+    if (igUrl) {
+      // Find your input field (change '#igUrl' to match your actual input ID or class)
+      const input = document.querySelector('#igUrl') || document.querySelector('input[type="text"]');
+
+      if (input) {
+        // Decode and set the value
+        input.value = decodeURIComponent(igUrl);
+
+        // Optional: Auto-click your "Generate GraphQL Link" button
+        // Change '#generateBtn' to your actual button ID or class
+        const generateBtn = document.querySelector('#generateBtn') || document.querySelector('button');
+        if (generateBtn) {
+          setTimeout(() => {
+            generateBtn.click(); // Triggers your copy/link generation logic
+          }, 300); // small delay so page is fully ready
+        }
+
+        // Optional: Show a nice message
+        const status = document.createElement('p');
+        status.style.color = '#22c55e';
+        status.style.marginTop = '12px';
+        status.textContent = 'Instagram URL auto-filled from extension!';
+        input.parentNode.insertBefore(status, input.nextSibling);
+      }
+    }
+  });
+</script>
 </body>
 </html>
