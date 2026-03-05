@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instagram Direct Video URL Extractor</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      margin: 0;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      background: #111;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+    }
+    h1 {
+      text-align: center;
+      color: #ff3366;
+      margin-bottom: 0.6em;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.1rem;
+      background: #1a1a1a;
+      border: 2px solid #333;
+      color: white;
+      border-radius: 10px;
+      margin: 20px 0;
+      outline: none;
+    }
+    input:focus {
+      border-color: #ff3366;
+    }
+    button {
+      background: linear-gradient(45deg, #ff3366, #cc3366);
+      color: white;
+      border: none;
+      padding: 16px 40px;
+      font-size: 1.1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: block;
+      margin: 20px auto;
+      transition: opacity 0.2s;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 10px;
+      border: 1px solid #333;
+      word-break: break-all;
+      font-size: 0.95rem;
+    }
+    .success { color: #33ff99; font-weight: bold; }
+    .error   { color: #ff6666; font-weight: bold; }
+    pre {
+      background: #000;
+      padding: 12px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 15px 0;
+    }
+    .steps {
+      margin-top: 25px;
+      padding: 15px;
+      background: #222;
+      border-left: 4px solid #ff3366;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Instagram Direct Video URL Extractor</h1>
+
+  <p>Paste any Instagram Reel / Post URL below:</p>
+  <input type="text" id="urlInput" placeholder="https://www.instagram.com/reels/DVeRz5gimxe/  or  https://www.instagram.com/reel/DVeRz5gimxe/..." />
+
+  <button onclick="extractAndFetch()">Get Direct Video URL</button>
+
+  <div id="result"></div>
+
+  <div class="steps">
+    <strong>When you get the link:</strong>
+    <ol>
+      <li>Click the link shown below (or copy-paste it into a new tab)</li>
+      <li>Wait for the video to load and start playing</li>
+      <li><strong>Right-click</strong> on the video (or long-press on mobile)</li>
+      <li>Select <strong>"Save video as..."</strong> or <strong>"Download video"</strong></li>
+      <li>If no menu appears: look for the <strong>three dots ⋮</strong> in the video player → tap them → choose Download/Save</li>
+    </ol>
+    <p style="margin-top:15px; font-size:0.9rem; opacity:0.8;">
+      Note: This fetches from Instagram's internal GraphQL using the fixed doc_id. If it fails (CORS / rate limit / doc_id rotated), use the manual method: open reel → Inspect → Network → filter mp4.
+    </p>
+  </div>
+</div>
+
+<script>
+  function extractShortcode(url) {
+    const regex = /(?:\/(reel|reels|p|tv)\/)([A-Za-z0-9_-]+)/i;
+    const match = url.match(regex);
+    return match ? match[2] : null;
+  }
+
+  async function extractAndFetch() {
+    const input = document.getElementById('urlInput').value.trim();
+    const resultDiv = document.getElementById('result');
+
+    resultDiv.innerHTML = '';
+
+    if (!input) {
+      resultDiv.innerHTML = '<p class="error">Please paste a valid Instagram URL</p>';
+      return;
+    }
+
+    const shortcode = extractShortcode(input);
+    if (!shortcode) {
+      resultDiv.innerHTML = '<p class="error">No valid shortcode found in the URL (after /reel/ or /reels/)</p>';
+      return;
+    }
+
+    resultDiv.innerHTML = '<p style="color:#aaa;">Fetching GraphQL data... please wait</p>';
+
+    const docId = '8845758582119845';
+    const graphqlUrl = `https://www.instagram.com/graphql/query/?doc_id=${docId}&variables=%7B%22shortcode%22%3A%22${shortcode}%22%2C%22fetch_tagged_user_count%22%3Anull%2C%22hoisted_comment_id%22%3Anull%2C%22hoisted_reply_id%22%3Anull%7D`;
+
+    try {
+      let response;
+
+      // Try direct fetch first
+      try {
+        response = await fetch(graphqlUrl);
+      } catch (e) {
+        // CORS likely blocked → use public proxy
+        const proxy = 'https://corsproxy.io/?' + encodeURIComponent(graphqlUrl);
+        response = await fetch(proxy);
+      }
+
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
+      const json = await response.json();
+      const media = json?.data?.xdt_shortcode_media;
+
+      if (!media) {
+        throw new Error('No media data found');
+      }
+
+      let mediaUrl = media.video_url || media.display_url || null;
+
+      if (!mediaUrl) {
+        throw new Error('No video_url or display_url found in response');
+      }
+
+      const type = media.video_url ? 'Video' : 'Image/Thumbnail';
+
+      resultDiv.innerHTML = `
+        <p class="success">Success! Direct ${type} URL found:</p>
+        <pre>${mediaUrl}</pre>
+        <p>
+          <a href="${mediaUrl}" target="_blank" style="color:#33ff99; text-decoration:underline; font-weight:bold;">
+            → Open link & download (right-click / three dots)
+          </a>
+        </p>
+      `;
+
+    } catch (err) {
+      resultDiv.innerHTML = `
+        <p class="error">Failed to get the URL</p>
+        <p style="color:#aaa;">${err.message}</p>
+        <p style="margin-top:15px;">
+          Possible reasons:<br>
+          • Instagram blocked the request (CORS / rate limit / doc_id outdated)<br>
+          • Post is private / deleted / restricted<br>
+          • Try again later or use manual method (Inspect → Network → .mp4)
+        </p>
+      `;
+    }
+  }
+</script>
+
+</body>
+</html>
