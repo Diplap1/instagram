@@ -3,156 +3,285 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Instagram Media Downloader - Official Tool</title>
+  <title>IG Video Downloader</title>
   <style>
+    :root {
+      --bg: #f5f5f5;
+      --card-bg: white;
+      --text: #262626;
+      --text-secondary: #8e8e8e;
+      --border: #dbdbdb;
+      --accent: #e1306c;
+      --accent-hover: #c13584;
+      --btn-primary: #e1306c;
+      --btn-primary-hover: #c13584;
+      --btn-secondary: #0095f6;
+      --btn-secondary-hover: #007bb5;
+      --input-bg: white;
+      --input-border: #dbdbdb;
+      --result-bg: #f8f9fa;
+      --shadow: rgba(0,0,0,0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0f0f0f;
+      --card-bg: #111;
+      --text: #e0e0e0;
+      --text-secondary: #aaaaaa;
+      --border: #333;
+      --accent: #ff3366;
+      --accent-hover: #e02e5c;
+      --btn-primary: #ff3366;
+      --btn-primary-hover: #e02e5c;
+      --btn-secondary: #3b82f6;
+      --btn-secondary-hover: #2563eb;
+      --input-bg: #1a1a1a;
+      --input-border: #444;
+      --result-bg: #1a1a1a;
+      --shadow: rgba(0,0,0,0.6);
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f5f5;
-      color: #262626;
+      background: var(--bg);
+      color: var(--text);
       margin: 0;
       padding: 20px;
       min-height: 100vh;
+      transition: background 0.3s, color 0.3s;
     }
+
     .container {
-      max-width: 800px;
+      max-width: 820px;
       margin: 0 auto;
-      background: white;
-      padding: 30px;
+      background: var(--card-bg);
+      padding: 32px;
       border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 32px var(--shadow);
+      position: relative;
     }
+
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+
     h1 {
       text-align: center;
-      color: #e1306c;
-      margin-bottom: 8px;
+      color: var(--accent);
+      margin: 0 0 12px;
+      font-size: 2.1rem;
     }
+
     .subtitle {
       text-align: center;
-      color: #8e8e8e;
-      margin-bottom: 30px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
     }
+
     .step {
-      background: #fafafa;
+      background: var(--result-bg);
       padding: 24px;
       border-radius: 12px;
-      margin: 24px 0;
-      border: 1px solid #dbdbdb;
+      margin: 28px 0;
+      border: 1px solid var(--border);
     }
+
     .step h3 {
-      color: #e1306c;
-      margin-bottom: 16px;
+      color: var(--accent);
+      margin: 0 0 16px;
+      font-size: 1.3rem;
     }
+
     input[type="text"], textarea {
       width: 100%;
       padding: 14px 16px;
       font-size: 1rem;
-      border: 1px solid #dbdbdb;
+      border: 1px solid var(--input-border);
       border-radius: 8px;
       margin: 12px 0;
-      resize: vertical;
-      min-height: 120px;
-      font-family: monospace;
+      box-sizing: border-box;
+      background: var(--input-bg);
+      color: var(--text);
     }
+
+    textarea {
+      min-height: 140px;
+      font-family: monospace;
+      resize: vertical;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
     button {
-      background: #e1306c;
+      background: var(--btn-primary);
       color: white;
       border: none;
-      padding: 14px 32px;
+      padding: 14px 28px;
       font-size: 1.05rem;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       transition: background 0.2s;
-      margin: 10px 8px 10px 0;
     }
+
     button:hover {
-      background: #c13584;
+      background: var(--btn-primary-hover);
     }
+
     button.copy-btn {
-      background: #0095f6;
+      background: var(--btn-secondary);
     }
+
     button.copy-btn:hover {
-      background: #007bb5;
+      background: var(--btn-secondary-hover);
     }
+
+    button.graph-btn {
+      background: var(--btn-secondary);
+      padding: 16px 36px;
+      font-size: 1.1rem;
+    }
+
     #preview {
       max-width: 100%;
       border-radius: 12px;
-      margin: 20px auto;
+      margin: 24px auto;
       display: block;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      box-shadow: 0 6px 24px var(--shadow);
     }
+
     #result {
-      margin-top: 30px;
+      margin-top: 32px;
       padding: 24px;
-      background: #f8f9fa;
+      background: var(--result-bg);
       border-radius: 12px;
-      border: 1px solid #e0e0e0;
+      border: 1px solid var(--border);
     }
+
     .info-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
-      margin: 20px 0;
+      margin: 24px 0;
     }
+
     .info-item {
-      background: white;
+      background: var(--card-bg);
       padding: 16px;
       border-radius: 10px;
-      border: 1px solid #eee;
+      border: 1px solid var(--border);
+      text-align: center;
     }
+
     .caption-box {
       white-space: pre-wrap;
       word-break: break-word;
-      max-height: 220px;
+      max-height: 240px;
       overflow-y: auto;
       padding: 16px;
-      background: white;
-      border: 1px solid #eee;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
       border-radius: 10px;
       margin: 16px 0;
+      font-size: 0.98rem;
     }
+
+    .reminder {
+      background: #fff3cd;
+      color: #856404;
+      padding: 16px;
+      border-radius: 10px;
+      margin: 16px 0;
+      border: 1px solid #ffeeba;
+    }
+
+    [data-theme="dark"] .reminder {
+      background: #3c2f00;
+      color: #ffcc00;
+      border-color: #665500;
+    }
+
     .error {
       color: #ed4956;
       font-weight: bold;
+      text-align: center;
     }
+
     @media (max-width: 600px) {
-      .info-grid {
-        grid-template-columns: 1fr;
+      .btn-group {
+        flex-direction: column;
       }
       button {
         width: 100%;
-        margin: 12px 0;
       }
     }
   </style>
 </head>
-<body>
+<body data-theme="light">
 
 <div class="container">
-  <h1>Instagram Media Downloader</h1>
-  <p class="subtitle">Download Reels, Videos, Photos from Public Instagram Posts</p>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light">🌙</button>
+
+  <h1>IG Video Downloader</h1>
+  <p class="subtitle">Download Reels, Videos & Photos from Public Instagram Posts</p>
 
   <div class="step">
-    <h3>Step 1: Paste Instagram URL</h3>
-    <input type="text" id="igUrl" placeholder="https://www.instagram.com/reel/ABC123xyz/ or https://www.instagram.com/reels/DEF456abc/ ..." />
-    <button onclick="generateGraphql()">Generate GraphQL Link</button>
+    <h3>1. Paste Instagram Reel / Post URL</h3>
+    <input type="text" id="igUrl" placeholder="https://www.instagram.com/reel/ABC123xyz/ ..." />
+    <div class="btn-group">
+      <button class="graph-btn" onclick="generateGraphql()">Go to GraphQL Link</button>
+    </div>
     <div id="generatedLink" style="margin-top:16px; word-break:break-all; font-size:0.95rem;"></div>
+    <div id="firstTimeReminder" class="reminder" style="display:none;">
+      <strong>Important – First time only:</strong><br>
+      After the page opens → press <strong>Ctrl+A</strong> (or Cmd+A on Mac) to select all → then <strong>Ctrl+C</strong> (or Cmd+C) to copy everything.<br>
+      Come back here and paste it into the box below.
+    </div>
   </div>
 
   <div class="step">
-    <h3>Step 2: Open the link above in new tab → Copy entire content (Ctrl+A → Ctrl+C)</h3>
-    <p>After the page loads, select all text (Ctrl+A or Cmd+A) and copy it.</p>
-  </div>
-
-  <div class="step">
-    <h3>Step 3: Paste the copied content here</h3>
-    <textarea id="jsonPaste" placeholder="Paste the full JSON response here..."></textarea>
-    <button onclick="parseAndShow()">Process & Download</button>
+    <h3>2. Paste the full copied content here</h3>
+    <textarea id="jsonPaste" placeholder="Paste the entire JSON from the GraphQL page..."></textarea>
+    <div class="btn-group">
+      <button onclick="parseAndShow()">Process & Download</button>
+    </div>
   </div>
 
   <div id="result"></div>
 </div>
 
 <script>
+  // Theme toggle
+  function toggleTheme() {
+    const current = document.body.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+
+    // Update toggle icon
+    const btn = document.querySelector('.theme-toggle');
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  }
+
+  // Load saved theme
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.body.setAttribute('data-theme', savedTheme);
+  document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+  let hasShownReminder = false;
+
   function extractShortcode(url) {
     const regex = /(?:\/(reel|reels|p|tv)\/)([A-Za-z0-9_-]+)/i;
     const match = url.match(regex);
@@ -162,20 +291,26 @@
   function generateGraphql() {
     const url = document.getElementById('igUrl').value.trim();
     const linkEl = document.getElementById('generatedLink');
-    linkEl.innerHTML = '';
 
     if (!url) return alert('Please enter a valid Instagram URL');
 
     const shortcode = extractShortcode(url);
-    if (!shortcode) return alert('Shortcode not found (check URL format)');
+    if (!shortcode) return alert('Shortcode not found – check URL format');
 
     const graphql = `https://www.instagram.com/graphql/query/?doc_id=8845758582119845&variables=%7B%22shortcode%22%3A%22${shortcode}%22%2C%22fetch_tagged_user_count%22%3Anull%2C%22hoisted_comment_id%22%3Anull%2C%22hoisted_reply_id%22%3Anull%7D`;
 
     linkEl.innerHTML = `
-      <strong>GraphQL Link (open in new tab):</strong><br>
-      <a href="${graphql}" target="_blank" style="color:#e1306c;">${graphql}</a><br>
-      <small style="color:#8e8e8e;">→ After opening → Ctrl+A → Ctrl+C to copy everything</small>
+      <strong>GraphQL Link:</strong><br>
+      <a href="${graphql}" target="_blank" style="color:var(--accent); text-decoration:underline;">
+        ${graphql}
+      </a>
+      <br><small>(Click above → wait for load → Ctrl+A → Ctrl+C → paste below)</small>
     `;
+
+    if (!hasShownReminder) {
+      document.getElementById('firstTimeReminder').style.display = 'block';
+      hasShownReminder = true;
+    }
   }
 
   function parseAndShow() {
@@ -183,70 +318,58 @@
     const result = document.getElementById('result');
     result.innerHTML = '';
 
-    if (!text) return result.innerHTML = '<p class="error">Please paste the JSON content first</p>';
+    if (!text) return result.innerHTML = '<p class="error">Paste the JSON content first</p>';
 
     try {
       const data = JSON.parse(text);
       const media = data?.data?.xdt_shortcode_media;
 
-      if (!media) throw new Error('Media data not found – wrong paste or blocked response');
+      if (!media) throw new Error('No media data found in the pasted content');
 
       const isVideo = !!media.video_url;
       const mediaUrl = media.video_url || media.display_url || media.thumbnail_src || '';
       const thumbUrl = media.thumbnail_src || media.display_url || '';
-      const caption = media.edge_media_to_caption?.edges?.[0]?.node?.text || 'No caption available';
+      const caption = media.edge_media_to_caption?.edges?.[0]?.node?.text || 'No caption';
       const username = media.owner?.username || 'Unknown';
-      const fullName = media.owner?.full_name || '';
       const views = media.video_view_count || '—';
       const plays = media.video_play_count || '—';
-      const duration = media.video_duration ? Math.floor(media.video_duration) + ' seconds' : '—';
+      const duration = media.video_duration ? Math.floor(media.video_duration) + ' s' : '—';
       const shortcode = media.shortcode || '—';
 
       let html = `
-        <h2 style="color:#e1306c; text-align:center; margin-bottom:24px;">Media Ready</h2>
+        <h2 style="color:var(--accent); text-align:center; margin-bottom:24px;">Media Ready to Download</h2>
 
         <div class="info-grid">
-          <div class="info-item">
-            <strong>Posted by</strong><br>
-            @${username} ${fullName ? `(${fullName})` : ''}
-          </div>
-          <div class="info-item">
-            <strong>Shortcode / ID</strong><br>
-            ${shortcode}
-          </div>
-          <div class="info-item">
-            <strong>Views / Plays</strong><br>
-            ${views} views • ${plays} plays
-          </div>
-          <div class="info-item">
-            <strong>Duration</strong><br>
-            ${duration}
-          </div>
+          <div class="info-item"><strong>By</strong><br>@${username}</div>
+          <div class="info-item"><strong>Shortcode</strong><br>${shortcode}</div>
+          <div class="info-item"><strong>Views / Plays</strong><br>${views} / ${plays}</div>
+          <div class="info-item"><strong>Duration</strong><br>${duration}</div>
         </div>
 
-        <h4 style="margin:24px 0 12px;">Caption / Description</h4>
-        <div class="caption-box">${caption}</div>
+        <h4 style="margin:28px 0 12px; color:var(--text);">Caption</h4>
+        <div class="caption-box" id="captionText">${caption}</div>
 
-        <div style="text-align:center; margin:30px 0;">
-          ${thumbUrl ? `<img id="preview" src="${thumbUrl}" alt="Media Preview" />` : '<p>No thumbnail available</p>'}
-        </div>
+        ${thumbUrl ? `
+          <div style="text-align:center; margin:32px 0;">
+            <img id="preview" src="${thumbUrl}" alt="Preview" />
+            <div style="margin-top:16px;">
+              <button onclick="triggerDownload('${thumbUrl}', 'thumb_${shortcode}.jpg')">
+                Download Thumbnail
+              </button>
+            </div>
+          </div>
+        ` : '<p style="text-align:center; color:var(--text-secondary);">No thumbnail available</p>'}
 
-        <div style="text-align:center;">
-          <button onclick="triggerDownload('${mediaUrl}', '${isVideo ? 'video' : 'photo'}_${shortcode}.${isVideo ? 'mp4' : 'jpg'}')">
+        <div class="btn-group" style="justify-content:center; margin:32px 0;">
+          <button onclick="triggerDownload('${mediaUrl}', '${isVideo ? 'reel' : 'post'}_${shortcode}.${isVideo ? 'mp4' : 'jpg'}')">
             ${isVideo ? 'Download Video' : 'Download Photo'}
           </button>
 
-          ${thumbUrl ? `
-            <button onclick="triggerDownload('${thumbUrl}', 'thumbnail_${shortcode}.jpg')">
-              Download Thumbnail
-            </button>
-          ` : ''}
-
-          <button class="copy-btn" onclick="copyText('${caption.replace(/'/g, "\\'")}')">
+          <button class="copy-btn" onclick="copyCaption()">
             Copy Caption
           </button>
 
-          <button class="copy-btn" onclick="copyFullInfo('${username}', '${views}', '${plays}', '${duration}', '${caption.replace(/'/g, "\\'")}')">
+          <button class="copy-btn" onclick="copyFullInfo('${username}', '${views}', '${plays}', '${duration}', \`${caption.replace(/`/g,'\\`')}\`)">
             Copy All Info
           </button>
         </div>
@@ -256,41 +379,47 @@
 
     } catch (err) {
       result.innerHTML = `
-        <p class="error">Could not process the pasted content</p>
-        <p style="color:#555;">${err.message}</p>
-        <p style="margin-top:16px;">
-          Please make sure you copied the <strong>full raw JSON</strong> from the GraphQL tab.<br>
-          If the response is blocked/error → doc_id may be outdated → use browser Network tab method instead.
+        <p class="error">Processing failed</p>
+        <p style="color:var(--text-secondary); text-align:center;">
+          ${err.message}<br><br>
+          Make sure you copied the <strong>full raw JSON</strong> from the opened tab.<br>
+          If nothing loads → the doc_id may be blocked → try the browser Network tab method.
         </p>
       `;
     }
   }
 
   function triggerDownload(url, filename) {
-    if (!url) return alert('No downloadable URL available');
+    if (!url) return alert('No file URL available');
     const a = document.createElement('a');
     a.href = url;
     a.download = filename;
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    a.remove();
   }
 
-  function copyText(text) {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Copied to clipboard!');
-    }).catch(() => alert('Copy failed – please select manually'));
+  function copyCaption() {
+    const caption = document.getElementById('captionText')?.innerText || '';
+    if (!caption) return alert('No caption to copy');
+    navigator.clipboard.writeText(caption).then(() => {
+      alert('Caption copied!');
+    }).catch(() => {
+      alert('Clipboard failed – please select the caption text manually');
+    });
   }
 
   function copyFullInfo(username, views, plays, duration, caption) {
-    const info = `Posted by: @${username}
+    const text = `Posted by: @${username}
 Views: ${views} • Plays: ${plays} • Duration: ${duration}
 
 Caption:
 ${caption}`;
-    navigator.clipboard.writeText(info).then(() => {
-      alert('Full info copied to clipboard!');
-    }).catch(() => alert('Copy failed'));
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Full info copied!');
+    }).catch(() => {
+      alert('Clipboard failed – copy manually');
+    });
   }
 </script>
 
